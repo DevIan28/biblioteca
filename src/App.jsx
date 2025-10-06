@@ -20,8 +20,9 @@ export default function App(){
 
   async function fetchBooks(q){
     try{
+      if(!q?.trim()) { setBooks([]); return }
       setLoading(true); setError('')
-      const res = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(q)}&limit=21`)
+      const res = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(q)}&limit=24`)
       if(!res.ok) throw new Error('Error al consultar la API')
       const data = await res.json()
       setBooks(data.docs || [])
@@ -29,7 +30,11 @@ export default function App(){
     finally{ setLoading(false) }
   }
 
-  useEffect(()=>{ fetchBooks(query) }, [])
+  useEffect(()=>{
+    const t = setTimeout(()=> { fetchBooks(query) }, 350)
+    return ()=> clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query])
 
   function addFavorite(b){
     if(!b.title) return
@@ -47,19 +52,40 @@ export default function App(){
   return (
     <div className="container">
       <Header onOpenAdd={()=>setOpenAdd(true)} />
-      <SearchBar onSearch={(q)=>{ setQuery(q); fetchBooks(q) }} />
+
+      <section className="hero hero-books" aria-label="Bienvenida">
+        <h2>Explora tu Biblioteca</h2>
+        <p>Busca por título, autor o tema. Los resultados aparecen a medida que escribes.</p>
+        <SearchBar
+          onSearch={(q)=> setQuery(q)}     // enter o botón
+          onType={(q)=> setQuery(q)}       // mientras escribe
+        />
+      </section>
+
+      <h3 className="section-title">Resultados</h3>
+
       {error && <div className="empty">{error}</div>}
-      {loading && <div className="empty">Cargando…</div>}
+      {loading && (
+        <div className="grid">
+          {Array.from({length:8}).map((_,i)=>(
+            <div className="card" key={i}>
+              <div className="skeleton" style={{width:'82px',height:'118px'}}></div>
+              <div style={{flex:1,display:'grid',gap:'8px'}}>
+                <div className="skeleton" style={{height:'18px', width:'70%'}}></div>
+                <div className="skeleton" style={{height:'14px', width:'50%'}}></div>
+                <div className="skeleton" style={{height:'34px', width:'40%'}}></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       {!loading && !error && (
-        <>
-          <h2 style={{marginTop:18}}>Resultados</h2>
-          <div className="grid">
-            {results.map((b,idx)=> (
-              <BookCard key={idx} book={b} onAddFav={addFavorite} />
-            ))}
-          </div>
-        </>
+        <div className="grid">
+          {results.map((b,idx)=> (
+            <BookCard key={idx} book={b} onAddFav={addFavorite} />
+          ))}
+        </div>
       )}
 
       <FavoritesPanel list={favorites} onDelete={removeFavorite} />
@@ -71,7 +97,7 @@ export default function App(){
             title: form.title.trim(),
             author: form.author.trim() || 'Autor desconocido',
             year: form.year.trim() || '—',
-            cover: 'https://via.placeholder.com/150x220?text=Libro'
+            cover: 'https://via.placeholder.com/160x220?text=Libro'
           })
           setForm({title:'',author:'',year:''})
           setOpenAdd(false)
