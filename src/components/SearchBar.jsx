@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 export default function SearchBar({ onSearch, onType }) {
-  const [q,setQ] = useState('programming')
+  const [q,setQ] = useState('')
 
   function handleChange(v){
     setQ(v)
