@@ -1,9 +1,20 @@
 :root{
-  --bg1:#0b132b; --bg2:#1c2541; --bg3:#3a506b;
+  /* Fondo general (NO toca .hero-books) */
+  --bg1:#0a0f1f; --bg2:#0e1726; --bg3:#1f2a44;
+
+  /* Glass y textos */
   --glass:rgba(255,255,255,.06);
-  --border:rgba(255,255,255,.12);
+  --glass-strong:rgba(255,255,255,.10);
+  --border:rgba(255,255,255,.14);
   --text:#e6edf3; --muted:#9fb3c8;
-  --brand:#22c55e; --brand-2:#8b5cf6; --danger:#ef4444;
+
+  /* Colores nuevos */
+  --primary-1:#06b6d4;   /* cyan para BUSCAR */
+  --primary-2:#0ea5e9;
+  --success-1:#f59e0b;   /* dorado para AÑADIR FAVORITOS */
+  --success-2:#fbbf24;
+  --danger:#ef4444;
+
   --shadow: 0 10px 30px rgba(0,0,0,.35);
 }
 
@@ -28,12 +39,13 @@ body::before{
 
 .container{max-width:1200px;margin:0 auto;padding:24px}
 
+/* Header (no cambiamos su fondo explícitamente) */
 .header{display:flex;align-items:center;gap:16px;justify-content:space-between}
 .brand{display:flex;align-items:center;gap:12px}
 .brand h1{margin:0;font-size:1.4rem;letter-spacing:.3px}
 .brand .tag{font-size:.78rem;padding:6px 10px;border:1px solid var(--border);border-radius:999px;color:var(--muted);backdrop-filter:blur(8px);background:var(--glass)}
 
-/* 🖼️ HERO con fondo de libros */
+/* 🖼️ HERO con fondo de libros (NO tocar) */
 .hero{
   margin-top:18px; padding:18px; border-radius:16px;
   background:linear-gradient(135deg, #00000066, #00000022);
@@ -50,6 +62,7 @@ body::before{
 .hero h2{margin:0 0 6px 0; font-size:1.2rem}
 .hero p{margin:0 0 10px 0;color:var(--muted)}
 
+/* Buscador */
 .search{margin-top:8px;display:flex;gap:10px;flex-wrap:wrap}
 .search input{
   flex:1; min-width:240px;
@@ -58,13 +71,16 @@ body::before{
   backdrop-filter: blur(10px);
 }
 .search input:focus{border-color:#7dd3fc88; box-shadow:0 0 0 3px #7dd3fc22}
+
+/* 👉 NUEVO color del botón BUSCAR (cyan) */
 .search button{
   padding:12px 16px;border-radius:12px;border:0;
-  background:linear-gradient(135deg, var(--brand), #16a34a);
-  color:#062a12;font-weight:800;cursor:pointer;box-shadow: var(--shadow);
-  transition: transform .08s ease;
+  background:linear-gradient(135deg, var(--primary-1), var(--primary-2));
+  color:#042a33;font-weight:800;cursor:pointer;box-shadow: var(--shadow);
+  transition: transform .08s ease, filter .12s ease;
 }
-.search button:active{transform: translateY(1px)}
+.search button:hover{ filter:brightness(1.05) }
+.search button:active{ transform: translateY(1px) }
 
 .section-title{
   margin:22px 0 8px; font-size:1.05rem; color:#c7dbe9; letter-spacing:.25px
@@ -75,17 +91,27 @@ body::before{
 @media (max-width:840px){.grid{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:560px){.grid{grid-template-columns:1fr}}
 
+/* 👉 Cards con glass más marcado y hover mejorado */
 .card{
-  background:var(--glass); border:1px solid var(--border); border-radius:16px;
+  background:var(--glass-strong);
+  border:1px solid var(--border);
+  border-radius:16px;
   padding:14px; display:flex; gap:12px; box-shadow: var(--shadow);
-  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
-  backdrop-filter: blur(10px);
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease;
+  backdrop-filter: blur(12px);
 }
-.card:hover{ transform: translateY(-2px); border-color:#93c5fd55; box-shadow: 0 14px 30px rgba(0,0,0,.4)}
+.card:hover{
+  transform: translateY(-2px);
+  border-color:#67e8f955;             /* acento cyan al hover */
+  background:rgba(255,255,255,.12);
+  box-shadow: 0 14px 34px rgba(0,0,0,.45);
+}
 .card img{width:82px;height:118px;object-fit:cover;border-radius:10px;border:1px solid var(--border)}
 .card h3{margin:0 0 6px 0;font-size:1rem;line-height:1.2}
 .card p{margin:0;color:var(--muted);font-size:.9rem}
 .card footer{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap}
+
+/* Botones base */
 .btn{
   padding:8px 12px;border-radius:10px;border:1px solid var(--border);
   background:linear-gradient(135deg,#111827,#0b1024); color:var(--text);
@@ -93,9 +119,21 @@ body::before{
 }
 .btn:hover{filter:brightness(1.08)}
 .btn:active{transform:translateY(1px)}
-.btn.primary{background:linear-gradient(135deg, var(--brand-2), #4f46e5); border:0; font-weight:700}
-.btn.danger{background:linear-gradient(135deg, #ef4444, #b91c1c); border:0}
 
+/* 👉 NUEVO botón 'success' (Añadir a Favoritos) dorado */
+.btn.success{
+  border:0;
+  background:linear-gradient(135deg, var(--success-1), var(--success-2));
+  color:#3b2302; font-weight:700;
+}
+
+/* Peligro (eliminar) */
+.btn.danger{
+  border:0;
+  background:linear-gradient(135deg, var(--danger), #b91c1c);
+}
+
+/* Panel Favoritos */
 .panel{
   margin-top:28px;background:var(--glass);
   border:1px solid var(--border); border-radius:16px; box-shadow: var(--shadow);
@@ -104,6 +142,7 @@ body::before{
 .panel header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
 .panel .content{padding:16px}
 
+/* Modales */
 .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:16px}
 .modal{
   background:var(--glass); border:1px solid var(--border); border-radius:14px;
@@ -116,8 +155,8 @@ body::before{
 }
 .modal footer{margin-top:10px;display:flex;gap:10px;justify-content:flex-end}
 
+/* Utilidades */
 .empty{color:var(--muted);text-align:center;padding:12px}
-
 .badge{padding:4px 10px;border:1px solid var(--border);border-radius:999px;color:var(--muted);backdrop-filter:blur(8px);background:var(--glass)}
 
 .skeleton{position:relative;overflow:hidden;background:#ffffff0d;border-radius:10px}
